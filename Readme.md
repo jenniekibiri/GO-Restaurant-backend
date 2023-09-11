@@ -21,3 +21,6 @@ Compile Daemon - https://github.com/githubnemo/Compile
 ## Setup
 - Clone the repository
 - Create a .env file in the root directory
+- docker-compose up -d --build
+
+![Alt text](image.png)
