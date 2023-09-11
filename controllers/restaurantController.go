@@ -9,7 +9,20 @@ import (
 	"github.com/jenniekibiri/go-backend/models"
 )
 
-// func to create a restaurant
+// @Summary Create a new restaurant
+// @Description Create a new restaurant entry
+// @Accept  json
+// @Produce  json
+// @Param restaurantName body string true "Restaurant Name"
+// @Param address body string true "Address"
+// @Param photo body string true "Photo"
+// @Param lat body float64 true "Latitude"
+// @Param long body float64 true "Longitude"
+// @Param rating body int true "Rating"
+// @Success 200 {object} string "Restaurant created successfully"
+// @Failure 400 {object} string "Fields are empty"
+// @Failure 500 {object} string "Failed to save restaurant"
+// @Router /restaurants [post]
 func CreateRestaurant(c *gin.Context) {
 	// get the body of the request
 	var body struct {
@@ -50,7 +63,11 @@ func CreateRestaurant(c *gin.Context) {
 
 }
 
-// function to get all restaurants
+// @Summary Get all restaurants
+// @Description  Get all restaurants
+// @Accept  json
+// @Produce  json
+// @Router /restaurants [get]
 func GetRestaurants(c *gin.Context) {
 	// get all restaurants
 	var restaurants []models.Restaurant
@@ -58,7 +75,12 @@ func GetRestaurants(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": restaurants})
 }
 
-// function to filter rastaurants by rating
+// @Summary Filter restaurants by rating
+// @Description  Filter restaurants by rating
+// @Accept  json
+// @Produce  json
+// @Param rating path string true "Rating"
+// @Router /restaurants/{rating} [get]
 func FilterRestaurantsByRating(c *gin.Context) {
 	// get the rating
 	rating := c.Param("rating")
@@ -68,7 +90,15 @@ func FilterRestaurantsByRating(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": restaurants})
 }
 
-// function to add a rating to a restaurant
+// @Summary Add rating to a restaurant
+// @Description  Add rating to a restaurant
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Restaurant ID"
+// @Param author_name body string true "Author Name"
+// @Param rating body int true "Rating"
+// @Param text body string true "Text"
+// @Router /restaurant/{id} [post]
 func AddRatingToRestaurant(c *gin.Context) {
 	var body struct {
 		AuthorName string `json:"author_name" binding:"required"`
@@ -109,7 +139,12 @@ func AddRatingToRestaurant(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": restaurant})
 }
 
-// function to get reviews of a restaurant
+// @Summary Get reviews of a restaurant
+// @Description  Get reviews of a restaurant
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Restaurant ID"
+// @Router /restaurant/{id} [get]
 func GetReviewsOfRestaurant(c *gin.Context) {
 	// get the restaurant id
 	restaurantId := c.Param("id")

@@ -1,0 +1,139 @@
+basePath: /
+host: localhost:4000
+info:
+  contact: {}
+  description: This is a sample restaurant API with Swagger documentation.
+  title: Restaurant API
+  version: "1"
+paths:
+  /restaurant/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get reviews of a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Get reviews of a restaurant
+    post:
+      consumes:
+      - application/json
+      description: Add rating to a restaurant
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Author Name
+        in: body
+        name: author_name
+        required: true
+        schema:
+          type: string
+      - description: Rating
+        in: body
+        name: rating
+        required: true
+        schema:
+          type: integer
+      - description: Text
+        in: body
+        name: text
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Add rating to a restaurant
+  /restaurants:
+    get:
+      consumes:
+      - application/json
+      description: Get all restaurants
+      produces:
+      - application/json
+      responses: {}
+      summary: Get all restaurants
+    post:
+      consumes:
+      - application/json
+      description: Create a new restaurant entry
+      parameters:
+      - description: Restaurant Name
+        in: body
+        name: restaurantName
+        required: true
+        schema:
+          type: string
+      - description: Address
+        in: body
+        name: address
+        required: true
+        schema:
+          type: string
+      - description: Photo
+        in: body
+        name: photo
+        required: true
+        schema:
+          type: string
+      - description: Latitude
+        in: body
+        name: lat
+        required: true
+        schema:
+          type: number
+      - description: Longitude
+        in: body
+        name: long
+        required: true
+        schema:
+          type: number
+      - description: Rating
+        in: body
+        name: rating
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Restaurant created successfully
+          schema:
+            type: string
+        "400":
+          description: Fields are empty
+          schema:
+            type: string
+        "500":
+          description: Failed to save restaurant
+          schema:
+            type: string
+      summary: Create a new restaurant
+  /restaurants/{rating}:
+    get:
+      consumes:
+      - application/json
+      description: Filter restaurants by rating
+      parameters:
+      - description: Rating
+        in: path
+        name: rating
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Filter restaurants by rating
+schemes:
+- http
+swagger: "2.0"
