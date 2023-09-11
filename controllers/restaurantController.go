@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 
-	"fmt"
 	"github.com/gin-gonic/gin"
 
 	"github.com/jenniekibiri/go-backend/initializers"
@@ -14,12 +13,12 @@ import (
 func CreateRestaurant(c *gin.Context) {
 	// get the body of the request
 	var body struct {
-		RestaurantName string
-		Address        string
-		Photo          string
-		Lat            float64
-		Long           float64
-		Rating         int
+		RestaurantName string  `binding:"required"`
+		Address        string  `binding:"required"`
+		Photo          string  `binding:"required"`
+		Lat            float64 `binding:"required"`
+		Long           float64 `binding:"required"`
+		Rating         int     `binding:"required"`
 	}
 	// check if empty or valide
 	if c.Bind(&body) != nil {
@@ -28,7 +27,7 @@ func CreateRestaurant(c *gin.Context) {
 	}
 
 	// create a restaurant
-	fmt.Println(body)
+
 	restaurant := models.Restaurant{
 		RestaurantName: body.RestaurantName,
 		Address:        body.Address,
@@ -40,7 +39,11 @@ func CreateRestaurant(c *gin.Context) {
 	}
 
 	// save the restaurant
-	initializers.DB.Create(&restaurant)
+	result :=initializers.DB.Create(&restaurant)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save rating"})
+		return
+	}
 
 	// return the restaurant
 	c.JSON(http.StatusOK, gin.H{"data": restaurant})
@@ -68,9 +71,9 @@ func FilterRestaurantsByRating(c *gin.Context) {
 // function to add a rating to a restaurant
 func AddRatingToRestaurant(c *gin.Context) {
 	var body struct {
-		AuthorName string
-		Rating     int
-		Text       string
+		AuthorName string `json:"author_name" binding:"required"`
+		Rating     int    `json:"rating" binding:"required"`
+		Text       string `json:"text" binding:"required"`
 	}
 	// check if empty or valide
 	if c.Bind(&body) != nil {
@@ -78,10 +81,17 @@ func AddRatingToRestaurant(c *gin.Context) {
 		return
 	}
 	// get the restaurant id
-	restaurantId := c.Param("rating")
+	restaurantId := c.Param("id")
+
 	// get the restaurant
 	var restaurant models.Restaurant
 	initializers.DB.Preload("Ratings").Where("id = ?", restaurantId).First(&restaurant)
+	// Check if the restaurant exists
+	if restaurant.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Restaurant not found"})
+		return
+	}
+
 	// create a rating
 	rating := models.Rating{
 		AuthorName:   body.AuthorName,
@@ -90,7 +100,11 @@ func AddRatingToRestaurant(c *gin.Context) {
 		RestaurantID: restaurant.ID,
 	}
 	// save the rating
-	initializers.DB.Create(&rating)
+	result := initializers.DB.Create(&rating)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save rating"})
+		return
+	}
 	// return the restaurant
 	c.JSON(http.StatusOK, gin.H{"data": restaurant})
 }
